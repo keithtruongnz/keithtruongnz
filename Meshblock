@@ -1,0 +1,55 @@
+import pandas as pd
+import numpy as np
+
+
+link1 = "https://dataanalysiswithpythonassignment-donotdelete-pr-ltxc18akx5rb8i.s3.us.cloud-object-storage.appdomain.cloud/meshblock-2013.csv"
+df1 = pd.read_csv(link1)
+print(df1.head(10))
+df1.reset_index(inplace=True)
+print(df1.index)
+print(df1.columns)
+
+#link2 = "https://dataanalysiswithpythonassignment-donotdelete-pr-ltxc18akx5rb8i.s3.us.cloud-object-storage.appdomain.cloud/Centroid%20XY.csv"
+#df2 = pd.read_csv(link2)
+# print(df2.head(10))
+# print(df2.columns)
+
+headers_3 = ["VALUATIONREF", "FORMATTEDADDRESS", "STREET", "SUBURB", "CT", "LEGAL", "X", "Y", "CL_Suburb", "CL_Town", "CL_RegionID", "CL_RegionName",
+             "CL_TAcode", "CL_TAName", "CL_Meshblock", "CL_SAU", "CL_Sale_Tenure", "CL_Latitude", "CL_Longitude", "CL_Bedrooms", "CL_Bathrooms", "PUBLIC_HOUSIN"]
+link3 = "https://dataanalysiswithpythonassignment-donotdelete-pr-ltxc18akx5rb8i.s3.us.cloud-object-storage.appdomain.cloud/HNZ_Auckland_to_Keith.csv"
+df3 = pd.read_csv(link3, names=headers_3, low_memory=False)
+print(df3.head())
+
+# Reset index
+df3.reset_index(inplace=True)
+print(df3.index)
+
+# Rename column
+df3.rename(columns={"CL_Meshblock": "MeshblockNumber"}, inplace=True)
+print(df3.columns)
+
+# Format data types
+#df3[['CL_RegionID', 'CL_SAU','CL_Sale_Tenure', 'CL_Latitude','CL_Longitude', 'CL_Bedrooms', 'CL_Bathrooms']] = df3[['CL_RegionID', 'CL_Meshblock', 'CL_SAU','CL_Sale_Tenure', 'CL_Latitude','CL_Longitude', 'CL_Bedrooms', 'CL_Bathrooms', 'PUBLIC_HOUSIN' ]].astype("float")
+
+#df3[['VALUATIONREF','FORMATTEDADDRESS', 'STREET', 'SUBURB', 'CT','LEGAL','CL_Suburb','CL_Town','CL_RegionName','CL_TAName']].astype('str')
+# df3[['MeshblockNumber']].astype('int')
+df3[['MeshblockNumber']].apply(pd.to_numeric, errors='coerce')
+# print(df.dtypes)
+print(df3.dtypes)
+
+# Check null_values in latitude and longtitude
+missing_data = df3[['CL_Latitude', 'CL_Longitude']].isnull()
+for column in missing_data.columns.values.tolist():
+    print(column)
+    print(missing_data[column].value_counts())
+    print("")
+
+#Export dataset with null values in lat, long value 
+null_dataset = df3['CL_Latitude'].isnull() | df3['CL_Longitude'].isnull()
+print(df3[null_dataset])
+df3[null_dataset].to_csv('Null_dataset.csv')
+
+#Drop Null value to creat dataset with lat and long value
+non_null_dataset = df3.dropna(subset =["CL_Latitude", "CL_Longitude"])
+print(non_null_dataset)
+non_null_dataset.to_csv('Non_null_dataset.csv')
