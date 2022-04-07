@@ -53,3 +53,27 @@ df3[null_dataset].to_csv('Null_dataset.csv')
 non_null_dataset = df3.dropna(subset =["CL_Latitude", "CL_Longitude"])
 print(non_null_dataset)
 non_null_dataset.to_csv('Non_null_dataset.csv')
+
+df = pd.read_csv("https://dataanalysiswithpythonassignment-donotdelete-pr-ltxc18akx5rb8i.s3.us.cloud-object-storage.appdomain.cloud/HNZ_Auckland_To%20Keith_LUD_AGE.csv", names = None)
+#df.rename(columns=df.iloc[0], inplace = True)
+print(df.head(10))
+print(df.columns)
+
+#Convert data types from object to string and integer
+dfn = df.convert_dtypes()
+print(dfn.dtypes)
+
+
+#df['VALUATIONREF', 'FORMATTEDADDRESS','STREET','SUBURB','CT', 'LEGAL','CL_Suburb', 'CL_Town', 'CL_RegionName','CL_TAName','CL_Sale_Tenure','LUD_AGE']=df['VALUATIONREF', 'FORMATTEDADDRESS','STREET','SUBURB','CT', 'LEGAL','CL_Suburb', 'CL_Town', 'CL_RegionName','CL_TAName','CL_Sale_Tenure','LUD_AGE'].astype('|S80')
+#print(df.dtypes) => Not work well
+
+#counting total properties by year
+counting_prop = dfn.groupby(by = 'LUD_AGE').count()
+print(counting_prop)
+counting_prop.to_csv("Counting_prop_by_year.csv")
+
+
+#counting properties in each meshblock by year
+count_meshblock = dfn.groupby(['CL_Meshblock','LUD_AGE']).size()
+print(count_meshblock)
+count_meshblock.to_csv("Counting_meshblock_by_year.csv")
